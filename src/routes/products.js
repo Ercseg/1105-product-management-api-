@@ -101,5 +101,31 @@ router.put("/:id", async (req, res) => {
     }
 })
 
+router.delete("/:id", async (req,res) =>{
+    try{
+        const [entry] = await db.select().from(products).where(eq(products.id, +req.params.id))
+
+        if (!entry){
+            return res.status(404).json({
+                message : "Product not found!"
+            })
+        }
+
+        await db.delete(products).where(eq(products.id,+req.params.id))
+
+        return res.status(200).json({
+            message : "Product deleted successfully"
+        })
+    }
+    catch(err){
+
+         return res.status(500).json({
+            error: err.message || "Something went wrong"
+        })
+
+
+    }
+})
+
 
 module.exports = router;
